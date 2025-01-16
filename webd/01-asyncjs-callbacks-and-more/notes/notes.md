@@ -17,7 +17,6 @@ js follows the third method
 
 In case of Callbacks, the function name is being passed as an argument instead of calling the function() since it is the same as passing the return value of the callback function.
 
-
 ![alt text](image-7.png)
 
 The call stack contains the CPU bound tasks that are currently being executed.
