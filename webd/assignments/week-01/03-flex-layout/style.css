@@ -1,0 +1,15 @@
+.container {
+  width: 1200px;
+  display: flex;
+  margin: auto;
+}
+
+.left-section {
+  flex: 1;
+  background-color: red;
+}
+
+.right-section {
+  flex: 2;
+  background-color: blue;
+}
