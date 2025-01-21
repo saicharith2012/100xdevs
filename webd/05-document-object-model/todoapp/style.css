@@ -1,0 +1,14 @@
+.todolist {
+    padding: 0;
+}
+
+.todolist li {
+    list-style-type: none;
+}
+
+.todo {
+    width: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}

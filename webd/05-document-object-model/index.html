@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <h1>Todo list</h1>
+
+    <div class="todolist">
+        <div id="todo-1">
+            <h4 class="todo">1. Take class.</h4>
+            <button onclick="deleteTodo(1)">delete</button>
+        </div>
+        
+        <div id="todo-2">
+            <h4 class="todo">2. Go out to eat.</h4>
+            <button onclick="deleteTodo(2)">delete</button>
+        </div>
+        
+        <div id="todo-3">
+            <h4 class="todo"></h4>
+            <button onclick="deleteTodo(3)">delete</button>
+        </div>
+    </div>
+        
+    <div>
+      <input type="text" placeholder="Add your todo here" />
+      <button onclick="addTodo()">Add Todo</button>
+    </div>
+
+    <script src="index.js"></script>
+  </body>
+</html>

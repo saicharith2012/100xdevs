@@ -1,0 +1,6 @@
+#todo-1 , #todo-2, #todo-3 {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 250px;
+}
