@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <input type="text" name="" id="" />
+    <button onclick="addTodo()">Add Todo</button>
+    <button onclick="deleteLastTodo()">Delete last todo</button>
+    <button onclick="deleteFirstTodo()">Delete First todo</button>
+    <div class="todolist"></div>
+    <script>
+      let todos = [];
+      let isEditing = false;
+
+      function addTodo() {
+        todos.push({
+          title: document.querySelector("input").value,
+        });
+
+        document.querySelector("input").value = "";
+        render();
+      }
+
+      function deleteLastTodo() {
+        // todos.pop(todos.length - 1);
+        todos.splice(todos.length - 1, 1); // index from where the elements need to be deleted, no.of elements from the index.
+        render();
+      }
+
+      function deleteFirstTodo() {
+        todos.splice(0, 1);
+        render();
+      }
+
+      function deleteTodo(index) {
+        todos.splice(index, 1);
+        render();
+      }
+
+      function editTodo(index) {
+        if (!isEditing) {
+          const editingField = document.createElement("input");
+          editingField.setAttribute("id", `editing-field-${index}`);
+          document.getElementById(`${index}`).replaceWith(editingField);
+          document.getElementById(`edit-${index}`).innerHTML = "Save";
+          isEditing = true;
+        } else if (isEditing) {
+          const editingField = document.querySelector(
+            `#editing-field-${index}`
+          );
+          console.log(editingField);
+          const inputValue = editingField.value;
+          const h1 = document.createElement("h1");
+          h1.setAttribute("id", index);
+          h1.innerHTML = inputValue;
+          editingField.replaceWith(h1);
+          document.getElementById(`edit-${index}`).innerHTML = "Edit";
+          isEditing = false;
+        }
+      }
+
+      function createTodoComponent(todo, index) {
+        const newTodo = document.createElement("div");
+
+        const h1 = document.createElement("h1");
+        h1.innerHTML = todo.title;
+        h1.setAttribute("id", index);
+
+        const deleteButton = document.createElement("button");
+        deleteButton.innerHTML = "Delete";
+        deleteButton.setAttribute("onclick", `deleteTodo(${index})`);
+
+        const editButton = document.createElement("button");
+        editButton.innerHTML = "Edit";
+        editButton.setAttribute("id", `edit-${index}`);
+        editButton.setAttribute("onclick", `editTodo(${index})`);
+
+        newTodo.appendChild(h1);
+        newTodo.appendChild(deleteButton);
+        newTodo.appendChild(editButton);
+
+        return newTodo;
+      }
+
+      // when it is called, it takes in the state and updates the dom
+      // hence, it solely takes care of the dom logic
+      // react does what this render() function does
+      function render() {
+        let index = 0;
+        const todoList = document.querySelector(".todolist");
+        todoList.innerHTML = "";
+
+        todos.forEach((todo) => {
+          const newTodo = createTodoComponent(todo, index); // the index for each element updates with every render
+          todoList.appendChild(newTodo);
+          index++;
+        });
+      }
+    </script>
+  </body>
+</html>
