@@ -1,6 +1,6 @@
 # Notes
 
-## State Derived Frontends.
+## State Derived Frontends
 
 Instead of doing all the DOM Manipulation manually,
 a framework can be designed to handle the DOM whereas
@@ -29,4 +29,3 @@ The state is updated constantly and the frontend is derived from it.
 ![alt text](image-4.png)
 
 ![alt text](image-6.png)
-
