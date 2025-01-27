@@ -53,7 +53,7 @@ serve package can be used to serve static files over http.
 
 cors errors occur for the background requests across different domains.  
 
-If both frontend and backend are deployed on the same domain, 
+If both frontend and backend are deployed on the same domain,  
 since both are of the same origin, there won't be any cross origin resource sharing, hence cors library is not needed.
 
 For cors requests, the browser first sends a preflight request to the server and based on the headers in the response it gets, it confirms if it can send a particular request to the server.
