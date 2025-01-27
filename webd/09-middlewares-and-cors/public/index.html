@@ -1,0 +1,31 @@
+<!-- frontend -->
+<!-- write an HTML file, that hits the calci backend server using the 'fetch' api -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.7.9/dist/axios.min.js"></script>
+  </head>
+  <body>
+    <input type="text" id="first-num" />
+    <input type="text" id="second-num" />
+    <button onclick="getSum()">sum</button>
+    <div id="result"></div>
+
+    <script>
+      async function getSum() {
+        const response = await axios.post("http://localhost:3000/add", {
+          a: document.getElementById("first-num").value,
+          b: document.getElementById("second-num").value,
+        });
+
+        document.getElementById("result").innerHTML = response.data.sum;
+      }
+    </script>
+  </body>
+</html>
+
+<!-- use "npx serve" to install serve package, that serves the static files over http. (basically this public dir) -->
