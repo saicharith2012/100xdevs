@@ -95,6 +95,9 @@ https://cdn.jsdelivr.net/npm/axios@1.7.9/dist/axios.min.js
         localStorage.setItem("auth-token", response.data.token);
         localStorage.setItem("loggedIn", "true");
 
+        usernameField.value = "";
+        passwordField.value = "";
+
         render();
         // local storage persists.
       }
@@ -114,6 +117,7 @@ https://cdn.jsdelivr.net/npm/axios@1.7.9/dist/axios.min.js
       function logout() {
         localStorage.removeItem("auth-token");
         localStorage.setItem("loggedIn", "false");
+        document.querySelector("#response").innerHTML = "";
         render();
       }
 
