@@ -60,7 +60,7 @@ app.post("/signup", (req, res) => {
   console.log(users);
 
   res.json({
-    message: "You are signedup.",
+    message: "You are signedup. Proceed to signing in.",
   });
 });
 
@@ -76,6 +76,7 @@ app.post("/signin", (req, res) => {
     res.json({
       message: "Invalid username or password!",
     });
+    return;
   }
 
   const token = jwt.sign(
@@ -108,6 +109,10 @@ function auth(req, res, next) {
 
   next();
 }
+
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/public/index.html");
+});
 
 app.post("/create", auth, (req, res) => {
   const todoTitle = req.body.todo;
