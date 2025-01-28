@@ -23,32 +23,47 @@ https://cdn.jsdelivr.net/npm/axios@1.7.9/dist/axios.min.js
       <button id="signin" onclick="signin()">sign in</button>
     </div>
 
-    <button onclick="getInfo()">get user info</button>
-    <div>
-      user information:
-      <p id="info"></p>
+    <div class="info-container">
+      <button onclick="getInfo()">get user info</button>
+      <div>
+        user information:
+        <p id="info"></p>
+      </div>
     </div>
 
-    <button id="logout" onclick="logout()">logout</button>
+    <div class="logout-container">
+      <button id="logout" onclick="logout()">logout</button>
+    </div>
 
     <div id="response"></div>
 
     <script>
-      function render() {
-        if (localStorage.getItem("auth-token")) {
-          localStorage.setItem("loggedIn", true);
-        } else {
-          localStorage.setItem("loggedIn", false);
-        }
+      if (localStorage.getItem("auth-token")) {
+        localStorage.setItem("loggedIn", "true");
+      } else {
+        localStorage.setItem("loggedIn", "false");
+      }
 
-        // console.log(!localStorage.getItem("loggedIn"))
-        if (!localStorage.getItem("loggedIn")) {
-          document
-            .getElementById("logout")
-            .setAttribute("style", "display: none");
+      const infoContainer = document.querySelector(".info-container");
+      const signUpBox = document.querySelector(".signup");
+      const signInBox = document.querySelector(".signin");
+      const logoutContainer = document.querySelector(".logout-container");
+
+      // the values in the local storage are stored as strings --> was stuck for so much time bcoz of this.
+      function render() {
+        const loggedIn = localStorage.getItem("loggedIn") === "true";
+        if (loggedIn) {
+          signUpBox.style.display = "none";
+          signInBox.style.display = "none";
+          logoutContainer.style.display = "block";
+          infoContainer.style.display = "block";
+        } else {
+          signUpBox.style.display = "block";
+          signInBox.style.display = "block";
+          logoutContainer.style.display = "none";
+          infoContainer.style.display = "none";
         }
       }
-      render();
 
       async function signup() {
         const usernameField = document.querySelector(".signup #username");
@@ -75,12 +90,10 @@ https://cdn.jsdelivr.net/npm/axios@1.7.9/dist/axios.min.js
         document.querySelector("#response").innerHTML = response.data.message;
 
         localStorage.setItem("auth-token", response.data.token);
-        // local storage persists.
-
-        usernameField.value = "";
-        passwordField.value = "";
+        localStorage.setItem("loggedIn", "true");
 
         render();
+        // local storage persists.
       }
 
       async function getInfo() {
@@ -97,8 +110,11 @@ https://cdn.jsdelivr.net/npm/axios@1.7.9/dist/axios.min.js
 
       function logout() {
         localStorage.removeItem("auth-token");
+        localStorage.setItem("loggedIn", "false");
         render();
       }
+
+      render();
     </script>
   </body>
 </html>
