@@ -88,6 +88,9 @@ https://cdn.jsdelivr.net/npm/axios@1.7.9/dist/axios.min.js
         });
 
         document.querySelector("#response").innerHTML = response.data.message;
+        if (response.data.status === 403) {
+          return;
+        }
 
         localStorage.setItem("auth-token", response.data.token);
         localStorage.setItem("loggedIn", "true");

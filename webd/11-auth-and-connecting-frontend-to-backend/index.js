@@ -67,6 +67,7 @@ app.post("/signin", (req, res) => {
   if (!foundUser) {
     res.json({
       message: "credentials incorrect",
+      status: 403,
     });
 
     return;
