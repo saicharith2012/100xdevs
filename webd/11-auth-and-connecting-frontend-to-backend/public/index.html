@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Auth website</title>
+    <script src="
+https://cdn.jsdelivr.net/npm/axios@1.7.9/dist/axios.min.js
+"></script>
+  </head>
+  <body>
+    <div class="signup">
+      <input id="username" type="text" placeholder="username" />
+      <input id="password" type="text" placeholder="password" />
+      <button id="signup" onclick="signup()">sign up</button>
+    </div>
+
+    <br />
+
+    <div class="signin">
+      <input id="username" type="text" placeholder="username" />
+      <input id="password" type="text" placeholder="password" />
+      <button id="signin" onclick="signin()">sign in</button>
+    </div>
+
+    <button onclick="getInfo()">get user info</button>
+    <div>
+      user information:
+      <p id="info"></p>
+    </div>
+
+    <button id="logout" onclick="logout()">logout</button>
+
+    <div id="response"></div>
+
+    <script>
+      function render() {
+        if (localStorage.getItem("auth-token")) {
+          localStorage.setItem("loggedIn", true);
+        } else {
+          localStorage.setItem("loggedIn", false);
+        }
+
+        // console.log(!localStorage.getItem("loggedIn"))
+        if (!localStorage.getItem("loggedIn")) {
+          document
+            .getElementById("logout")
+            .setAttribute("style", "display: none");
+        }
+      }
+      render();
+
+      async function signup() {
+        const usernameField = document.querySelector(".signup #username");
+        const passwordField = document.querySelector(".signup #password");
+        const response = await axios.post("http://localhost:3000/signup", {
+          username: usernameField.value,
+          password: passwordField.value,
+        });
+        document.querySelector("#response").innerHTML = response.data.message;
+
+        usernameField.value = "";
+        passwordField.value = "";
+      }
+
+      async function signin() {
+        const usernameField = document.querySelector(".signin #username");
+        const passwordField = document.querySelector(".signin #password");
+
+        const response = await axios.post("http://localhost:3000/signin", {
+          username: usernameField.value,
+          password: passwordField.value,
+        });
+
+        document.querySelector("#response").innerHTML = response.data.message;
+
+        localStorage.setItem("auth-token", response.data.token);
+        // local storage persists.
+
+        usernameField.value = "";
+        passwordField.value = "";
+
+        render();
+      }
+
+      async function getInfo() {
+        const response = await axios.get("http://localhost:3000/me", {
+          headers: {
+            authorization: localStorage.getItem("auth-token"),
+          },
+        });
+
+        document.querySelector(
+          "#info"
+        ).innerHTML = `<div>username: ${response.data.username} </div> <div>password: ${response.data.password}</div>`;
+      }
+
+      function logout() {
+        localStorage.removeItem("auth-token");
+        render();
+      }
+    </script>
+  </body>
+</html>
