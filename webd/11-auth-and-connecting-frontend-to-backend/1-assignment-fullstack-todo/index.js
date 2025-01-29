@@ -30,6 +30,8 @@ let users = [];
 //     {
 //         username...}]
 
+
+
 app.use(express.json());
 
 function auth(req, res, next) {}
@@ -57,7 +59,7 @@ app.post("/signup", (req, res) => {
     password,
   });
 
-  console.log(users);
+  // console.log(users);
 
   res.json({
     message: "You are signedup. Proceed to signing in.",
@@ -75,6 +77,7 @@ app.post("/signin", (req, res) => {
   if (!foundUser) {
     res.json({
       message: "Invalid username or password!",
+      statusCode: 403,
     });
     return;
   }
@@ -86,9 +89,10 @@ app.post("/signin", (req, res) => {
     JWT_SECRET
   );
 
-  res.json({
+  res.status(200).json({
     message: "You are signedin.",
     token: token,
+    statusCode: 200,
   });
 });
 
@@ -117,6 +121,13 @@ app.get("/", (req, res) => {
 app.post("/create", auth, (req, res) => {
   const todoTitle = req.body.todo;
 
+  if (todoTitle.length === 0) {
+    res.json({
+      message: "todo cannot be empty",
+    });
+    return;
+  }
+
   let foundUser = users.find((u) => u.username === req.username);
 
   if (!foundUser.todos) {
@@ -129,15 +140,24 @@ app.post("/create", auth, (req, res) => {
     todoStatus: "pending",
   });
 
-  console.log(users);
+  // console.log(users);
 
   res.json({
     message: "todo added successfully!",
+    statusCode: 200,
   });
 });
 
 app.get("/all", auth, (req, res) => {
   const foundUser = users.find((u) => u.username === req.username);
+
+  // console.log(req.username);
+
+  if (!foundUser.todos) {
+    foundUser.todos = [];
+  }
+
+  // console.log(foundUser.todos);
 
   res.json({
     todos: foundUser.todos,
@@ -146,6 +166,14 @@ app.get("/all", auth, (req, res) => {
 
 app.put("/update", auth, (req, res) => {
   const { todoId, newTitle } = req.body;
+
+  if (newTitle.length === 0) {
+    res.json({
+      message: "task cannot be empty",
+    });
+    return;
+  }
+
   let foundUser = users.find((u) => u.username === req.username);
 
   let foundTodo = foundUser.todos.find((todo) => todo.todoId === todoId);
@@ -154,11 +182,12 @@ app.put("/update", auth, (req, res) => {
 
   res.json({
     message: "todo updated successfully.",
+    statusCode: 200,
   });
 });
 
-app.delete("/delete", auth, (req, res) => {
-  const { todoId } = req.body;
+app.delete("/delete/:id", auth, (req, res) => {
+  const todoId = req.params.id;
 
   let foundUser = users.find((user) => user.username === req.username);
 
@@ -168,6 +197,7 @@ app.delete("/delete", auth, (req, res) => {
 
   res.json({
     message: "todo deleted succesfully",
+    statusCode: 200,
   });
 });
 
@@ -180,8 +210,26 @@ app.put("/check", auth, (req, res) => {
 
   checkTodo.todoStatus = "finished";
 
+  // console.log(checkTodo);
+
   res.json({
     message: "todo checked succesfully.",
+  });
+});
+
+app.delete("/delete-all", auth, (req, res) => {
+  let foundUser = users.find((u) => u.username === req.username);
+  if (!foundUser.todos) {
+    res.json({
+      message: "nothing to delete.",
+    });
+    return;
+  }
+  foundUser.todos = [];
+
+  res.json({
+    message: "all todos deleted successfully.",
+    statusCode: 200,
   });
 });
 

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>fullstack todo</title>
+    <script src="
+https://cdn.jsdelivr.net/npm/axios@1.7.9/dist/axios.min.js
+"></script>
+    <style>
+      .check-button {
+        background-color: white;
+      }
+
+      .check-button.check-button-finished {
+        background-color: green;
+      }
+    </style>
+  </head>
+  <body>
+    TodoList
+    <div class="signup">
+      <input id="signup-username" type="text" />
+      <input id="signup-password" type="text" />
+      <button id="signup-button" onclick="signup()">sign up</button>
+    </div>
+
+    <div class="signin">
+      <input id="signin-username" type="text" />
+      <input id="signin-password" type="text" />
+      <button id="signin-button" onclick="signin()">sign in</button>
+    </div>
+
+    <div class="todo-container">
+      <input id="todo-input" type="text" />
+      <button id="todo-submit" onclick="addTodo()">add todo</button>
+
+      <div class="todo-list"></div>
+    </div>
+
+    <div class="logout-container">
+      <button onclick="logout()">logout</button>
+    </div>
+
+    <div class="delete-container">
+      <button id="delete-all-todos" onclick="deleteAll()">delete all</button>
+    </div>
+
+    <div id="response"></div>
+
+    <script>
+      const signupContainer = document.querySelector(".signup");
+      const signinContainer = document.querySelector(".signin");
+      const responseContainer = document.querySelector("#response");
+      const todoContainer = document.querySelector(".todo-container");
+      const logoutContainer = document.querySelector(".logout-container");
+      const deleteAllContainer = document.querySelector(".delete-container");
+      const signupUsernameField = document.querySelector("#signup-username");
+      const signupPasswordField = document.querySelector("#signup-password");
+      const signinUsernameField = document.querySelector("#signin-username");
+      const signinPasswordField = document.querySelector("#signin-password");
+      const todolist = document.querySelector(".todo-list");
+
+      if (localStorage.getItem("auth-token")) {
+        localStorage.setItem("loggedIn", "true");
+      } else {
+        localStorage.setItem("loggedIn", "false");
+      }
+
+      function render() {
+        const loggedIn = localStorage.getItem("loggedIn");
+        if (loggedIn === "true") {
+          signupContainer.style.display = "none";
+          signinContainer.style.display = "none";
+          todoContainer.style.display = "block";
+          logoutContainer.style.display = "block";
+          deleteAllContainer.style.display = "block";
+        } else {
+          signupContainer.style.display = "block";
+          signinContainer.style.display = "block";
+          todoContainer.style.display = "none";
+          logoutContainer.style.display = "none";
+          deleteAllContainer.style.display = "none";
+        }
+      }
+
+      render();
+
+      async function signup() {
+        const response = await axios.post("http://localhost:3000/signup", {
+          username: signupUsernameField.value,
+          password: signupPasswordField.value,
+        });
+
+        responseContainer.innerHTML = response.data.message;
+
+        signupUsernameField.value = "";
+        signupPasswordField.value = "";
+        signinUsernameField.value = "";
+        signinPasswordField.value = "";
+      }
+
+      async function signin() {
+        const response = await axios.post("http://localhost:3000/signin", {
+          username: signinUsernameField.value,
+          password: signinPasswordField.value,
+        });
+
+        if (response.data.statusCode !== 200) {
+          responseContainer.innerHTML = response.data.message;
+          return;
+        }
+
+        responseContainer.innerHTML = "";
+        localStorage.setItem("auth-token", response.data.token);
+
+        signupUsernameField.value = "";
+        signupPasswordField.value = "";
+        signinUsernameField.value = "";
+        signinPasswordField.value = "";
+
+        localStorage.setItem("loggedIn", "true");
+
+        render();
+        getAllTodos();
+      }
+
+      function logout() {
+        localStorage.removeItem("auth-token");
+        localStorage.setItem("loggedIn", "false");
+        responseContainer.innerHTML = "";
+
+        render();
+      }
+
+      async function addTodo() {
+        const inputField = document.querySelector("#todo-input");
+
+        const response = await axios.post(
+          "http://localhost:3000/create",
+          {
+            todo: inputField.value,
+          },
+          {
+            headers: {
+              authorization: localStorage.getItem("auth-token"),
+            },
+          }
+        );
+
+        if (response.data.statusCode != 200) {
+          responseContainer.innerHTML = response.data.message;
+          return;
+        }
+
+        responseContainer.innerHTML = "";
+
+        inputField.value = "";
+
+        getAllTodos();
+      }
+
+      async function getAllTodos() {
+        const response = await axios.get("http://localhost:3000/all", {
+          headers: {
+            authorization: localStorage.getItem("auth-token"),
+          },
+        });
+
+        todolist.innerHTML = "";
+
+        response.data.todos?.map((todo) => {
+          const todoTile = document.createElement("div");
+          todoTile.className = "todo-tile";
+          todoTile.id = `todo-tile-${todo.todoId}`;
+          todoTile.setAttribute("isediting", "false");
+
+          const todoTitle = document.createElement("p");
+          todoTitle.className = "todo-title";
+          todoTitle.innerHTML = todo.todoTitle;
+          todoTitle.id = `todo-title-${todo.todoId}`;
+
+          const checkButton = document.createElement("button");
+          checkButton.className = "check-todo";
+          if (todo.todoStatus === "finished") {
+            checkButton.classList.add("check-button-finished");
+          }
+          checkButton.innerHTML = "check";
+          checkButton.addEventListener("click", () => {
+            checkTodo(todo.todoId);
+          });
+
+          const deleteButton = document.createElement("button");
+          deleteButton.className = "delete-todo";
+          deleteButton.innerHTML = "delete";
+          deleteButton.addEventListener("click", () => {
+            deleteTodo(todo.todoId);
+          });
+
+          const editButton = document.createElement("button");
+          editButton.className = "edit-todo";
+          editButton.id = `edit-button-${todo.todoId}`;
+          // editButton.innerHTML = "edit"
+
+          if (!todoTile.isediting) {
+            editButton.innerHTML = "edit";
+          } else {
+            editButton.innerHTML = "save";
+          }
+
+          editButton.addEventListener("click", () => {
+            editTodo(todo.todoId);
+          });
+
+          todoTile.appendChild(todoTitle);
+          todoTile.appendChild(editButton);
+          todoTile.appendChild(checkButton);
+          todoTile.appendChild(deleteButton);
+          todolist.appendChild(todoTile);
+        });
+      }
+
+      async function deleteTodo(id) {
+        // the delete request typically don't send a request body, there sending id as parameters
+        // but axios allows to explicitly send them in its second argument ""
+        const response = await axios.delete(
+          `http://localhost:3000/delete/${id}`,
+          {
+            headers: {
+              authorization: localStorage.getItem("auth-token"),
+            },
+          }
+        );
+
+        getAllTodos();
+      }
+
+      async function checkTodo(id) {
+        const response = await axios.put(
+          "http://localhost:3000/check",
+          {
+            todoId: id,
+          },
+          {
+            headers: {
+              authorization: localStorage.getItem("auth-token"),
+            },
+          }
+        );
+
+        getAllTodos();
+      }
+
+      async function deleteAll() {
+        const response = await axios.delete(
+          "http://localhost:3000/delete-all",
+          {
+            headers: {
+              authorization: localStorage.getItem("auth-token"),
+            },
+          }
+        );
+
+        if (response.data.statusCode != 200) {
+          responseContainer.innerHTML = response.data.message;
+          return;
+        }
+
+        responseContainer.innerHTML = "";
+
+        getAllTodos();
+      }
+
+      async function editTodo(todoId) {
+        const todoTile = document.querySelector(`#todo-tile-${todoId}`);
+        const isediting = todoTile.getAttribute("isediting");
+        // console.log(isediting)
+
+        if (isediting === "false") {
+          const editingField = document.createElement("input");
+          editingField.id = `editing-field-${todoId}`;
+          const titleContainer = document.querySelector(
+            `#todo-title-${todoId}`
+          );
+          editingField.value = titleContainer.innerHTML;
+          titleContainer.replaceWith(editingField);
+          editingField.focus();
+          document.querySelector(`#edit-button-${todoId}`).innerHTML = "save";
+          todoTile.setAttribute("isediting", "true");
+        } else {
+          const newTitle = document.querySelector(
+            `#editing-field-${todoId}`
+          ).value;
+
+          const response = await axios.put(
+            "http://localhost:3000/update",
+            {
+              todoId,
+              newTitle,
+            },
+            {
+              headers: {
+                authorization: localStorage.getItem("auth-token"),
+              },
+            }
+          );
+
+          if (response.data.statusCode !== 200) {
+            responseContainer.innerHTML = response.data.message;
+            return;
+          }
+
+          responseContainer.innerHTML = "";
+
+          getAllTodos();
+        }
+      }
+
+      if (localStorage.getItem("auth-token")) {
+        getAllTodos();
+      }
+    </script>
+  </body>
+</html>
