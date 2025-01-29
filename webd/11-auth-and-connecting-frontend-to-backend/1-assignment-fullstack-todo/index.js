@@ -6,12 +6,13 @@
 const express = require("express");
 const jwt = require("jsonwebtoken");
 const { v4 } = require("uuid");
+const fs = require("fs/promises");
 
 const app = express();
 
 const JWT_SECRET = "helloworld";
 
-let users = [];
+// let users = [];
 // [
 //     {
 //         username:,
@@ -30,15 +31,35 @@ let users = [];
 //     {
 //         username...}]
 
+async function readFile() {
+  try {
+    const data = await fs.readFile("database.json", "utf-8");
+    return JSON.parse(data);
+  } catch (err) {
+    if (err.code === "ENOENT") {
+      return [];
+    }
 
+    console.error(err);
+  }
+}
+
+async function writeFile(content) {
+  try {
+    const data = JSON.stringify(content, null, 2);
+    await fs.writeFile("database.json", data, "utf-8");
+  } catch (err) {
+    console.error(err);
+  }
+}
 
 app.use(express.json());
 
-function auth(req, res, next) {}
-
-app.post("/signup", (req, res) => {
+app.post("/signup", async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
+
+  let users = await readFile();
 
   if (users.find((u) => u.username === username)) {
     res.json({
@@ -61,15 +82,18 @@ app.post("/signup", (req, res) => {
 
   // console.log(users);
 
+  await writeFile(users);
+
   res.json({
     message: "You are signedup. Proceed to signing in.",
   });
 });
 
-app.post("/signin", (req, res) => {
+app.post("/signin", async (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
 
+  let users = await readFile()
   const foundUser = users.find(
     (u) => u.username === username && u.password === password
   );
@@ -118,7 +142,7 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/index.html");
 });
 
-app.post("/create", auth, (req, res) => {
+app.post("/create", auth, async (req, res) => {
   const todoTitle = req.body.todo;
 
   if (todoTitle.length === 0) {
@@ -127,6 +151,8 @@ app.post("/create", auth, (req, res) => {
     });
     return;
   }
+
+  let users = await readFile();
 
   let foundUser = users.find((u) => u.username === req.username);
 
@@ -141,6 +167,7 @@ app.post("/create", auth, (req, res) => {
   });
 
   // console.log(users);
+  await writeFile(users);
 
   res.json({
     message: "todo added successfully!",
@@ -148,8 +175,9 @@ app.post("/create", auth, (req, res) => {
   });
 });
 
-app.get("/all", auth, (req, res) => {
-  const foundUser = users.find((u) => u.username === req.username);
+app.get("/all", auth, async (req, res) => {
+  let users = await readFile();
+  let foundUser = users.find((u) => u.username === req.username);
 
   // console.log(req.username);
 
@@ -164,7 +192,7 @@ app.get("/all", auth, (req, res) => {
   });
 });
 
-app.put("/update", auth, (req, res) => {
+app.put("/update", auth, async (req, res) => {
   const { todoId, newTitle } = req.body;
 
   if (newTitle.length === 0) {
@@ -174,11 +202,15 @@ app.put("/update", auth, (req, res) => {
     return;
   }
 
+  let users = await readFile();
+
   let foundUser = users.find((u) => u.username === req.username);
 
   let foundTodo = foundUser.todos.find((todo) => todo.todoId === todoId);
 
   foundTodo.todoTitle = newTitle;
+
+  await writeFile(users);
 
   res.json({
     message: "todo updated successfully.",
@@ -186,8 +218,10 @@ app.put("/update", auth, (req, res) => {
   });
 });
 
-app.delete("/delete/:id", auth, (req, res) => {
+app.delete("/delete/:id", auth, async (req, res) => {
   const todoId = req.params.id;
+
+  let users = await readFile();
 
   let foundUser = users.find((user) => user.username === req.username);
 
@@ -195,14 +229,18 @@ app.delete("/delete/:id", auth, (req, res) => {
 
   foundUser.todos.splice(removeId, 1);
 
+  await writeFile(users);
+
   res.json({
     message: "todo deleted succesfully",
     statusCode: 200,
   });
 });
 
-app.put("/check", auth, (req, res) => {
+app.put("/check", auth, async (req, res) => {
   const { todoId } = req.body;
+
+  let users = await readFile();
 
   let foundUser = users.find((u) => u.username === req.username);
 
@@ -212,12 +250,15 @@ app.put("/check", auth, (req, res) => {
 
   // console.log(checkTodo);
 
+  await writeFile(users);
+
   res.json({
     message: "todo checked succesfully.",
   });
 });
 
-app.delete("/delete-all", auth, (req, res) => {
+app.delete("/delete-all", auth, async (req, res) => {
+  let users = await readFile();
   let foundUser = users.find((u) => u.username === req.username);
   if (!foundUser.todos) {
     res.json({
@@ -226,6 +267,8 @@ app.delete("/delete-all", auth, (req, res) => {
     return;
   }
   foundUser.todos = [];
+
+  await writeFile(users);
 
   res.json({
     message: "all todos deleted successfully.",
