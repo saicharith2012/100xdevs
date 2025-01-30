@@ -10,6 +10,7 @@ const User = new Schema({
   },
   password: String,
   name: String,
+  salt: String,
 });
 
 const Todo = new Schema({
