@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Counter</title>
+  </head>
+  <body>
+    <div class="button-parent"></div>
+    <script>
+      //   The state
+      const state = {
+        count: 0,
+        color: "red",
+      };
+
+      //   Modifying the state
+      function onButtonPress() {
+        state.count++;
+        state.color = Math.random() > 0.5 ? "red" : "yellow";
+        ButtonComponentReRender();
+      }
+
+      //   what React does under the hood when the state changes
+      function ButtonComponentReRender() {
+        document.querySelector(".button-parent").innerHTML = "";
+        const component = ButtonComponent(state.count, state.color);
+        document.querySelector(".button-parent").appendChild(component);
+      }
+
+      //   Defining the component
+      function ButtonComponent(count, color) {
+        const counterButton = document.createElement("button");
+        counterButton.innerHTML = `Counter ` + `${count}`;
+        counterButton.setAttribute("onclick", "onButtonPress()");
+        counterButton.setAttribute("style", `background-color: ${color} `);
+
+        return counterButton;
+      }
+      ButtonComponentReRender();
+    </script>
+  </body>
+</html>
