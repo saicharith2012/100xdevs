@@ -4,7 +4,7 @@
 
 ![alt text](image.png)
 
-Hot module replacemnent is the changes made in DOM when the code is changed while testing a react app.
+Hot module replacement is the changes made in DOM when the code is changed while testing a react app.
 
 Module bundlers like rollup compile the small pieces of code from different files in the react project into a large and complex file.
 
@@ -58,3 +58,60 @@ The callback inside the useEffect() runs during the first render that is when th
 ![alt text](image-11.png)
 
 ![alt text](image-8.png)
+
+## Children
+
+![alt text](image-12.png)
+
+Wrapper component.
+![alt text](image-14.png)
+
+## Lists and Keys
+
+![alt text](image-16.png)
+
+![alt text](image-13.png)
+
+![alt text](image-15.png)
+
+## Class Based vs Functional Components
+
+![alt text](image-17.png)
+
+![alt text](image-18.png)
+
+![alt text](image-19.png)
+
+![alt text](image-20.png)
+
+## Lifecycle events
+
+![alt text](image-21.png)
+
+lifecycle events in class based components.
+![alt text](image-23.png)
+
+![alt text](image-22.png)
+
+## Error Boundary
+
+Containing an error within the component in which it is thrown, by
+implementing a fallback UI for the component to render when the error is thrown.
+
+This is particularly useful for improving the user experience by gracefully handling unexpected errors.
+
+![alt text](image-24.png)
+
+Error Boundary is implemented using class based components.
+
+![alt text](image-25.png)
+
+![alt text](image-26.png)
+
+## Fragments
+
+In functional components, A function can return only one parent element. To send multiple elements, there must be a parent element wrapping them.
+
+To skip wrapping them with a parent element and to make sure the root element has multiple children, those children could be wrapped with a <></> (fragment), making them behave as one element.
+
+![alt text](image-27.png)
