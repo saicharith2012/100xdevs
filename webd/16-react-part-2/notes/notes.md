@@ -31,6 +31,3 @@ One use case of useRef is to reference a dom element that persists across rerend
 Other than focussing, the dom elements can be referenced with useRef to scroll to top or bottom on dependency change.
 
 Another use case is To reference a value that does not trigger a rerender when it's changed.
-
-
-
