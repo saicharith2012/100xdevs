@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+@theme {
+    --color-cblue-200: #738b9f;
+    --color-cblue-400: #18385e;
+    --color-cblue-700: #01264e;
+    --color-cgreen-400: #54b6c8;
+}
+
+.page {
+    @apply m-auto h-screen flex flex-col pt-16 items-center;
+}
+
+.sec-heading {
+    @apply text-white text-3xl font-medium mb-14 text-center
+}
