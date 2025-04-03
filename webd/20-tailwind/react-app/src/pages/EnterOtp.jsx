@@ -6,6 +6,8 @@ import { useState } from "react";
 export default function EnterOtp() {
   const [disabled, setDisabled] = useState(true);
 
+  const [otp, setOtp] = useState("")
+
   return (
     <div className="page">
       <Heading />
@@ -15,14 +17,14 @@ export default function EnterOtp() {
         <span className="text-white"> saicharithp@gmail.com</span>
       </p>
 
-      <OTPField setDisabled={setDisabled} number={6} />
+      <OTPField setDisabled={setDisabled} number={6} setOtp={setOtp} />
 
       <div className="flex items-center">
         <img src="time.png" className="w-4 h-4 opacity-60 mr-2"></img>
         <span className="text-white/60 text-sm">09:32</span>
       </div>
 
-      <Button disabled={disabled} >
+      <Button disabled={disabled} onClick={() => console.log(otp)}>
         Signup
       </Button>
       <p className="text-white/60">

@@ -1,11 +1,24 @@
 import { useEffect, useRef, React } from "react";
 
-export default function OTPField({ setDisabled, number }) {
+export default function OTPField({ setDisabled, number, setOtp }) {
   const ref = useRef(Array(number).fill(0));
 
   useEffect(() => {
     ref.current[0].focus();
   }, []);
+
+  const firstElementValue = ref.current[0].value;
+
+  useEffect(() => {
+    const extractOtp = () => {
+      const otpArray = ref.current.map((input) => {
+        return input?.value || "";
+      });
+      setOtp(otpArray.join(""));
+    };
+
+    extractOtp();
+  }, [setOtp, firstElementValue]);
 
   return (
     <div className="flex gap-2 mb-2">
