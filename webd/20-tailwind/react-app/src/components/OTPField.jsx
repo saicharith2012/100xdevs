@@ -27,9 +27,11 @@ export default function OTPField({ setDisabled, number }) {
                 }
               }}
               goBack={() => {
-                if (ref.current[index].value !== "" || index === 0) {
+                if (index === number - 1 && ref.current[index].value !== "") {
                   ref.current[index].value = "";
                   setDisabled(true);
+                } else if (index == 0) {
+                  ref.current[index].value = "";
                 } else {
                   ref.current[index - 1].focus();
                   ref.current[index - 1].value = "";
