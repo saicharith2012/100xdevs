@@ -79,3 +79,19 @@
 ![alt text](image-32.png)
 
 ![alt text](image-33.png)
+
+![alt text](image-34.png)
+
+## Web Interactions
+
+![alt text](image-35.png)
+
+![alt text](image-36.png)
+
+![alt text](image-37.png)
+
+## Branding
+
+![alt text](image-38.png)
+
+[UI/UX Primitives](https://pricey-pyjama-7d5.notion.site/UI-UX-Primitives-12521c8092ab809bb9cfe39227759220)
