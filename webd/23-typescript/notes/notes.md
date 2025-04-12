@@ -55,3 +55,15 @@ But the tsc compiler doesn't accept implicit declaration of "any", hence the var
 ## The `tsconfig` file
 
 ![alt text](image-11.png)
+
+## Interfaces
+
+![alt text](image-12.png)
+
+## Types
+
+![alt text](image-13.png)
+
+![alt text](image-14.png)
+
+![alt text](image-15.png)

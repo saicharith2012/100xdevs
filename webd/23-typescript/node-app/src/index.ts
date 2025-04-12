@@ -48,3 +48,83 @@ const greet = (name: string) => {
 };
 
 greet("4it");
+
+// object as an arugment
+function greet1(user: { firstname: string; age: number }) {
+  console.log(`hello ${user.firstname} .  YOu aRe ${user.age}`);
+}
+
+// type inferred implicitly
+// let user = {
+//   firstname: "charith",
+//   age: 21,
+// }
+
+let user: {
+  firstname: string;
+  age: number;
+} = {
+  firstname: "charith",
+  age: 22,
+};
+
+greet1(user);
+// code has become verbose due to multiple declaration of the object type.
+// We can use interfaces to declare types to objects in the form of typescript constructs.
+
+// USING INTERFACES
+interface User {
+  firstname: string;
+  age: number;
+}
+
+function greet2(user: User) {
+  console.log(`hello ${user.firstname} .  YOu aRe ${user.age}`);
+}
+
+let user2: User = {
+  firstname: "charith",
+  age: 23,
+};
+
+greet2(user2);
+
+// TYPES
+type UserType = {
+  firstname: string;
+  age: number;
+};
+
+// union types -- cannot be done in interfaces
+type StringOrNumber = string | number;
+
+function sum(a: StringOrNumber, b: StringOrNumber): StringOrNumber {
+  if (typeof a === "number" && typeof b === "number") {
+    return a + b;
+  } else if (typeof a === "string" && typeof b === "string") {
+    return a + b;
+  } else {
+    throw new Error(
+      "Both arguments must be of the same type (either string or number)."
+    );
+  }
+}
+
+// intersection types --> having fields of both types/interfaces
+interface Employee {
+  name: string;
+  startDate: Date;
+};
+
+interface Manager {
+  name: string;
+  department: string;
+};
+
+type TeamLead = Employee & Manager;
+
+const teamLead: TeamLead = {
+  name: "harkirat",
+  startDate: new Date(),
+  department: "Software Developer",
+};
