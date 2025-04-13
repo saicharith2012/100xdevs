@@ -98,17 +98,27 @@ type UserType = {
 // union types -- cannot be done in interfaces
 type StringOrNumber = string | number;
 
-function sum(a: StringOrNumber, b: StringOrNumber): StringOrNumber {
-  if (typeof a === "number" && typeof b === "number") {
-    return a + b;
-  } else if (typeof a === "string" && typeof b === "string") {
-    return a + b;
-  } else {
-    throw new Error(
-      "Both arguments must be of the same type (either string or number)."
-    );
-  }
-}
+// Function to calculate the sum of two values, which can either be both numbers or both strings.
+// If both arguments are numbers, it returns their sum.
+// If both arguments are strings, it concatenates them.
+// Throws an error if the arguments are of different types or unsupported types.
+// function sum(a: StringOrNumber, b: StringOrNumber): StringOrNumber {
+//   if (typeof a === "number" && typeof b === "number") {
+//     return a + b;
+//   } else if (typeof a === "string" && typeof b === "string") {
+//     return a + b;
+//   } else if (typeof a === "string" && typeof b === "number") {
+//     return a + b.toString();
+//   } else if (typeof a === "number" && typeof b === "string") {
+//     return a.toString() + b;
+//   } else {
+//     throw new Error(
+//       "Unsupported types. Arguments must be either string or number."
+//     );
+//   }
+// } ---> wrong
+
+// Typescript at present doesn't support operations b/w operands of union types.
 
 // intersection types --> having fields of both types/interfaces
 interface Employee {
@@ -128,3 +138,11 @@ const teamLead: TeamLead = {
   startDate: new Date(),
   department: "Software Developer",
 };
+
+// Recursive Types
+type Dependency = {
+  title: string,
+  subDependencies: Dependency[]
+}
+
+
