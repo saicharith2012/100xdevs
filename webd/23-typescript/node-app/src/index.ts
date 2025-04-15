@@ -89,6 +89,114 @@ let user2: User = {
 
 greet2(user2);
 
+interface Address {
+  city?: string;
+  country?: string;
+  pincode: number;
+}
+
+interface User2 {
+  name: string;
+  age: number;
+  // address?: {
+  //   city?: string;
+  //   country?: string;
+  //   pincode: number;
+  // }; Don't Repeat Yourself(DRY)
+  address?: Address;
+}
+
+interface Office {
+  address: Address;
+}
+
+let user3: User2 = {
+  name: "charith",
+  age: 22,
+  address: {
+    city: "San Francisco",
+    country: "US",
+    pincode: 95016,
+  },
+};
+
+let user4: User2 = {
+  name: "caspir",
+  age: 7,
+};
+
+let user5: User2 = {
+  name: "cspr",
+  age: 1,
+  address: {
+    pincode: 95017,
+  },
+};
+
+function isLegal(person: User2): boolean {
+  return person.age >= 18;
+}
+
+console.log(`${user3.name} ${isLegal(user3) ? "is legal" : "is illegal"}`);
+console.log(`${user4.name} ${isLegal(user4) ? "is legal" : "is illegal"}`);
+console.log(`${user5.name} ${isLegal(user5) ? "is legal" : "is illegal"}`);
+
+// implementing interfaces
+interface People {
+  name: string;
+  age: number;
+  greet: () => string;
+  greet2?(): string;
+}
+
+const person1: People = {
+  name: "charith",
+  age: 22,
+  greet: () => {
+    return `Hi ${person1.name}`;
+  },
+  // greet2(): string {
+  //   return `Bye ${this.name}`;
+  // },
+};
+
+console.log(person1.greet());
+// console.log(person1.greet2())
+
+// Classes implemented using interfaces
+class Person implements People {
+  constructor(public name: string, public age: number, public phone?: number) {}
+
+  greet = () => {
+    return `Hi ${this.name}...Heard you're ${this.age}!!!`;
+  };
+}
+
+const person3 = new Person("charith", 22);
+console.log(person3.greet());
+
+// Abstract Classes (same as interfaces)
+
+abstract class Human {
+  isMale: boolean;
+  constructor(isMale: boolean) {
+    this.isMale = isMale;
+  }
+  abstract greet: () => string;
+}
+
+class Occupation extends Human {
+  constructor(public isMale: boolean) {
+    super(isMale);
+  }
+  greet = () => {
+    return `hi ${this.isMale ? "sir" : "mam"}`;
+  };
+}
+
+const officer = new Occupation(false);
+console.log(officer.greet());
+
 // TYPES
 type UserType = {
   firstname: string;
@@ -102,6 +210,7 @@ type StringOrNumber = string | number;
 // If both arguments are numbers, it returns their sum.
 // If both arguments are strings, it concatenates them.
 // Throws an error if the arguments are of different types or unsupported types.
+
 // function sum(a: StringOrNumber, b: StringOrNumber): StringOrNumber {
 //   if (typeof a === "number" && typeof b === "number") {
 //     return a + b;
@@ -124,12 +233,12 @@ type StringOrNumber = string | number;
 interface Employee {
   name: string;
   startDate: Date;
-};
+}
 
 interface Manager {
   name: string;
   department: string;
-};
+}
 
 type TeamLead = Employee & Manager;
 
@@ -141,8 +250,75 @@ const teamLead: TeamLead = {
 
 // Recursive Types
 type Dependency = {
-  title: string,
-  subDependencies: Dependency[]
+  title: string;
+  subDependencies: Dependency[];
+};
+
+// Assignment:
+// Create two types called User and Admin
+// Create a functioni that takes either a user or an admin as an input, and returns a string saying "Welcom, [name]".
+
+interface Admin {
+  name: string;
+  permissions: string;
 }
 
+interface Client {
+  name: string;
+  age: number;
+}
 
+function Wish(user: Client | Admin) {
+  console.log(user.name);
+}
+
+// Arrays
+// prblm: Find the max value in a given array.
+function getMax(nums: number[]) {
+  let maxValue = -10000000000000;
+
+  for (let i = 0; i < nums.length; i++) {
+    if (nums[i] > maxValue) {
+      maxValue = nums[i];
+    }
+  }
+
+  return maxValue;
+}
+
+console.log(`max value is ${getMax([2, 1, 4, 5, 2, 5])}`);
+
+// prblm: Given a list of students, filter out the users that are legal(>=18)
+interface Student {
+  firstName: string;
+  lastName: string;
+  age: number;
+}
+
+function getLegal(students: Student[]): Student[] {
+  // let result: Student[] = [];
+  // for (let i = 0; i < students.length; i++) {
+  //   if (students[i].age >= 18) {
+  //     result.push(students[i]);
+  //   }
+  // }
+
+  // return result;
+
+  return students.filter((student) => student.age >= 18);
+}
+
+console.log(
+  getLegal([
+    {
+      firstName: "sai charith",
+      lastName: "p",
+      age: 22,
+    },
+    {
+      firstName: "caspir",
+      lastName: "parange",
+      age: 10,
+    },
+  ])
+);
