@@ -182,3 +182,122 @@ Hence, Even though Interfaces and Types mostly serve the same purpose aggregatin
 ## Arrays in TS
 
 If you want to access arrays in typescript, it's as simple as adding a [] annotation next to the type.
+
+## Enums
+
+![alt text](image-26.png)
+
+![alt text](image-28.png)
+
+![alt text](image-27.png)
+
+![alt text](image-29.png)
+
+## Generics
+
+Generics are used for writing reusable type-safe code without redundancy.
+
+Generics in general are **Type placeholders** such that we can write a reusable function, class or component that works with _any_ type, still retaining typescript's strong typing.
+
+```Typescript
+function firstElement(arr: any[]): any{
+  return arr[0]
+}
+```
+
+In this example, for the function to accept different types we used _any_ as the functions input type, but losing all the type safety in the process.
+
+That's where Generics come into the picture.
+
+```Typescript
+function identity<T>(arg: T): T {
+  return arg
+}
+```
+
+**T** here is the generic parameter (can be named anything like **ArgType** or something else)
+
+In this case, whatever type is passed in we get the same type back.
+
+```Typescript
+const result = identity<string>("Charith")
+const numResult = identity(42)
+```
+
+**TS can infer the type by itself.**
+
+### Examples
+
+#### With Arrays
+
+``` Typescript
+function firstElement<T>(arr: T[]): T {
+  return arr[0]
+}
+```
+
+Works for string[], number[], CustomType[] etc...
+
+```Typescript
+const name = firstElement(["Charith", "Caspir"])
+const first = firstElement([true, false])
+```
+
+#### With Interfaces or Types
+
+```Typescript
+interface ApiResponse<T> {
+  data: T;
+  success: boolean;
+}
+
+const response: ApiResponse<string> = {
+  data: "You got this!",
+  success: true
+}
+
+// Super useful for REST APIs where the shape of the data can constantly vary.
+```
+
+#### Generic Constraints
+
+```Typescript
+function getLength<T extends {length: number}>(item: T): number {
+  return item.length;
+}
+```
+
+In this case, the generic parameter T must contain the length property when the function is being called.
+
+#### Generics in Classes
+
+```Typescript
+class Box<T> {
+  content: T;
+  constructor(value: T) {
+    this.content = value;
+  }
+}
+
+const stringBox = new Box<string>("Charith")
+```
+
+In this case, the class can be reusable any type of input.
+
+#### Generic Functions with Multiple Types
+
+```Typescript
+function merge<T, U>(a: T, b: U): T & U {
+  return {...a, ...b}
+}
+
+const result = merge({name: "Charith"}, {dev: true});
+// result type here is {name: string; dev: boolean}
+```
+
+Merging two different types into one.
+
+#### When not to use generics
+
+- If the type is known and fixed.
+- If it makes the code unnecessarily complex.

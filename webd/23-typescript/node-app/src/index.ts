@@ -322,3 +322,19 @@ console.log(
     },
   ])
 );
+
+// ENUMS
+
+enum Direction {
+  EAST = "east",
+  WEST = "west",
+  NORTH = "north",
+  SOUTH = "south",
+}
+
+function doSomething(keyPressed: Direction) {
+  console.log(`We're going towards ${keyPressed}`);
+}
+
+doSomething(Direction.EAST);
+
