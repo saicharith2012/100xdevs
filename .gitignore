@@ -1,3 +1,4 @@
 node_modules
 assignments-main
 .env
+dist/
