@@ -125,3 +125,132 @@ This is highly possible **when the values are being appended to the SQL query st
 ![alt text](image-32.png)
 
 ![alt text](image-34.png)
+
+## Relationships
+
+Relationships let you store data in different tables and relate them with each other.
+
+### How relationships work in a NoSQL database like MongoDb?
+
+Its possible to nest document objects in MongoDB without the need of defining relationships between different models.
+
+![alt text](image-36.png)
+
+But in order to make the data objects be available to be read separately, we use relations in mongodb too.
+
+![alt text](image-35.png)
+
+ > user id is being used to relate the users and todos model here.
+
+### Relationships in SQL databases
+
+JSON objects can be stored in SQL table too.
+
+![alt text](image-37.png)
+
+**But its not a good practice.**
+
+Therefore, In SQL, to store data in different tables,the **primary key of one table** is used as the **foreign key of another table** in order to relate them.
+
+In this case, one entry of a table can be related to multiple entries of a different table, thus making it possible to store multiple related records for a single entity.
+
+![alt text](image-38.png)
+
+This is called a **relationship**, which means that the **Address** table is related to the **user** table.
+
+When defining the table, the **relationship** needs to be defined with the **FOREIGN KEY** keyword.
+
+<!-- user: id, username 50, email 255, password 255, created_at
+addresses: id, user_id, city 100, country 100, street 255, pincode 20, created_at, foreign key
+ -->
+
+```SQL
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+)
+
+CREATE TABLE addresses (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    country VARCHAR(100) NOT NULL,
+    street VARCHAR(255) NOT NULL,
+    pincode VARCHAR(20) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+)
+```
+
+> To insert the address of a user:
+
+```SQL
+INSERT INTO addresses (user_id, city, country, street, pincode)
+VALUES (1, 'New York', 'USA', '123 Broadway', '10001');
+```
+
+> Read the address of a user given their id:
+
+```SQL
+SELECT city, country, street, pincode
+FROM addresses
+WHERE user_id = 1
+```
+
+## Transactions
+
+When two queries needs to be sent in a single request, What if one of the queries fails? the state won't be consistent.
+
+This would require **Transactions** in SQL to ensure either both the user information and address goes in, or neither does.
+
+If either one of them fails, the other one is reverted.
+
+```SQL
+-- sql query
+BEGIN; -- start transaction
+
+INSERT INTO users (username, email, password)
+VALUES ('john_doe', 'john_doe1@example.com', 'securepassword123')
+
+INSERT INTO addresses (user_id, city, country, street, pincode)
+VALUES (currval('users_id_seq'), 'New York', 'USA', '123 Broadway St', '10001');
+
+COMMIT;
+```
+
+## JOINS
+
+To join data from two tables together.
+
+![alt text](image-40.png)
+
+```SQL
+-- selecting entries by joining two tables.
+
+SELECT u.id, u.username, u.email, a.city, a.country, a.street, a.pincode
+FROM users u JOIN addresses a ON u.id = a.user_id
+WHERE u.id = <YOUR_USER_ID>;
+```
+
+> JOINs optimise the no.of database requests. But on large scale applications that contain millions of entries, JOINs can become expensive (n * m), thus making it reasonable to handle the request to the backend in multiple database calls.
+
+## Types of JOINs
+
+### INNER JOIN
+
+![alt text](image-39.png)
+
+### LEFT JOIN
+
+![alt text](image-41.png)
+
+### RIGHT JOIN
+
+![alt text](image-42.png)
+
+### FULL JOIN
+
+![alt text](image-43.png)
