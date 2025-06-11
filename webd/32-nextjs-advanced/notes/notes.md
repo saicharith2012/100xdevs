@@ -120,3 +120,55 @@ Since, during a request, the server needs to send **only the html in case of** *
 And after hydration, the page is rerendered  on the client side and it is checked whether the server side rendered DOM tree state, and the client side rendered DOM tree state match or not. If not, it causes the most common **Hydration Error**.
 
 ![alt text](image-17.png)
+
+## Middlewares in Nextjs
+
+Middleware in Next.js lets you run **custom logic before a request is completed** — great for auth, redirects, geolocation, logging, etc.
+
+Runs in the **Edge Runtime** = server-side, ultra-low latency, near user.
+
+---
+
+### 📁 Where is Middleware Defined?
+
+Create a `middleware.ts` or `middleware.js` in the root of `app` or `pages` directory.
+
+### ✅ What Middleware Can Do
+
+- Redirect requests  
+- Rewrite paths  
+- Set headers/cookies  
+- Block/allow access to routes  
+- Inject localization or variants
+
+---
+
+### 🧠 Middleware Example
+
+```ts
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+
+export function middleware(request: NextRequest) {
+  const loggedIn = request.cookies.get('auth-token')
+  
+  if (!loggedIn) {
+    return NextResponse.redirect(new URL('/login', request.url))
+  }
+
+  return NextResponse.next()
+}
+```
+
+### Matching Specific paths
+
+Use matcher to control which routes invoke middleware:
+
+```Typescript
+export const config = {
+  matcher: ['/dashboard/:path*', '/settings/:path*'],
+}
+```
+
+This runs the middleware only for /dashboard/*
+and /settings/*.
