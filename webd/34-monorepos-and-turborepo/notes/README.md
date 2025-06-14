@@ -71,6 +71,8 @@ Few Examples where monorepos are used:
 
 - Parallelization can be acheived even by using just build systems with scripts that run them parallely.
 
+![alt text](image-15.png)
+
 - But something that's not possible with traditional build systems is **Dependency Graph Awareness**. In this case, the shared reusable code is considered as a different package itself.
 
 ![alt text](image-14.png)
