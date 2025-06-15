@@ -80,3 +80,19 @@ Few Examples where monorepos are used:
 - **Turborepo will be aware of this dependency graph**. Such that turborepo prioritises the build processes of different packages on the basis of their dependency on other packages.
 
 >Using an EC2 machine for the build process of a nextjs app can crash the server itself. (Very heavy process.)
+
+## Turborepo folder structure
+
+![alt text](image-16.png)
+
+> Turborepo is known for its faster build times. It builds only the apps that have code changes and caches builds for other apps in the repo (which have no changes inside them). But when packages are updated, since all the apps might be using them, all of them are build again leaving aside the cache.
+
+## Running the project
+
+![alt text](image-17.png)
+
+## Exploring root package.json
+
+![alt text](image-18.png)
+
+![alt text](image-19.png)
