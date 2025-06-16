@@ -96,3 +96,19 @@ Few Examples where monorepos are used:
 ![alt text](image-18.png)
 
 ![alt text](image-19.png)
+
+## Exploring packages/ui
+
+![alt text](image-20.png)
+
+## Exploring apps/web
+
+![alt text](image-21.png)
+
+## Exploring turbo.json
+
+![alt text](image-22.png)
+
+## Caching in Turborepo
+
+![alt text](image-23.png)
